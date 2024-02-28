@@ -32,6 +32,8 @@ function displayResults(todayData, tomorrowData, locationName) {
         <h4>Today's Sunrise and Sunset</h4>
         <p>Sunrise: ${todayData.sunrise}</p>
         <p>Sunset: ${todayData.sunset}</p>
+        <p>Dawn: ${todayData.dawn}</p>
+        <p>Dusk: ${todayData.dusk}</p>
         <p>Solar Noon: ${todayData.solar_noon}</p>
         <p>Day Length: ${todayData.day_length}</p>
         <p>Time Zone: ${todayData.timezone}</p>
@@ -39,6 +41,8 @@ function displayResults(todayData, tomorrowData, locationName) {
         <h4>Tomorrow's Sunrise and Sunset</h4>
         <p>Sunrise: ${tomorrowData.sunrise}</p>
         <p>Sunset: ${tomorrowData.sunset}</p>
+        <p>Dawn: ${tomorrowData.dawn}</p>
+        <p>Dusk: ${tomorrowData.dusk}</p>
         <p>Solar Noon: ${tomorrowData.solar_noon}</p>
         <p>Day Length: ${tomorrowData.day_length}</p>
         <p>Time Zone: ${tomorrowData.timezone}</p>
