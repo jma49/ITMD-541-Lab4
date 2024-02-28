@@ -1,0 +1,93 @@
+body {
+    font-family: 'Space Mono', monospace;
+    background-color: #121212; 
+    color: #E0E0E0; 
+    margin: 0;
+    padding: 0;
+    line-height: 1.5; 
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 3px solid #70F15E; 
+    background-color: #1a1a1a; 
+    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.1); 
+    border-radius: 8px; 
+}
+
+/* Cursor animation */
+.typing-cursor {
+    display: inline-block;
+    margin-left: 5px; /* Space between the text and cursor */
+    background-color: #70F15E; /* Cursor color */
+    width: 8px; /* Cursor width */
+    height: 0.8em; /* Cursor height */
+    animation: blink-animation 1s steps(2) infinite;
+}
+
+@keyframes blink-animation {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.header h1 {
+    text-align: center;
+    color: #70F15E; 
+    margin-bottom: 1.5rem;
+}
+
+.search-area {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; 
+    margin-bottom: 2rem;
+}
+
+#locationInput, #search-button, #geolocation-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #333;
+    background-color: #262626;
+    color: #E0E0E0;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#locationInput {
+    flex: 1;
+}
+
+#search-button:hover, #geolocation-button:hover {
+    background-color: #333;
+    border-color: #70F15E;
+    cursor: pointer;
+}
+
+#results, #error-container {
+    padding: 1rem;
+    background-color: #262626; 
+    border: 3px solid #9e9e9e; 
+    border-radius: 4px;
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+#results, #error-container {
+    color: #E0E0E0; 
+    margin-bottom: 0.5rem;
+}
+
+
+@media (max-width: 600px) {
+    .search-area {
+        flex-direction: column; 
+    }
+
+    #locationInput, #search-button, #geolocation-button {
+        width: 100%; 
+        margin: 0.5rem 0; 
+    }
+}
