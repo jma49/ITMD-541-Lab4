@@ -105,33 +105,56 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Loading spinner */
 .loading-container {
-    display: none; /* 默认隐藏加载动画，当加载时通过JS显示 */
-    position: fixed; /* 固定位置，确保用户在页面上滚动时能看到 */
+    display: none; 
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
-    z-index: 1000; /* 确保加载动画在其他内容之上 */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
 .loading-spinner {
-    border: 5px solid #f3f3f3; /* Light grey */
-    border-top: 5px solid #3498db; /* Blue */
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.loading-spinner:before, .loading-spinner:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    border: 5px solid transparent;
     animation: spin 2s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.loading-spinner:before {
+    border-top: 5px solid #9B30FF;
+    animation-duration: 1.5s; 
 }
+
+.loading-spinner:after {
+    border-bottom: 5px solid #70F15E; 
+    animation-duration: 2.5s; 
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 
 @media (max-width: 600px) {
     .search-area {
