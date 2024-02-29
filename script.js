@@ -1,28 +1,73 @@
 function searchLocation() {
+    showLoadingAnimation(); 
     const location = document.getElementById('locationInput').value;
-    fetch(`https://geocode.maps.co/search?q=${location}`)
-        .then(response => response.json())
+    fetch(`https://geocode.maps.co/search?q=${location}&api_key=65dfc7241a2e0327872325ano74c68e`)
+        .then(response =>  response.json())
         .then(data => {
-            const coords = data[0];
-            if (!coords) {
-                showError('Location not found.');
-                return;
+            if (data.length === 0) {
+                throw new Error('Location not found');
             }
-            Promise.all([
+            const coords = data[0];
+            const locationName = coords.display_name; 
+            return Promise.all([
                 fetchSunriseSunset(coords.lat, coords.lon, getTodayDate()),
                 fetchSunriseSunset(coords.lat, coords.lon, getTomorrowDate())
             ]).then(([todayData, tomorrowData]) => {
-                displayResults(todayData, tomorrowData, coords.display_name);
+                displayResults(todayData, tomorrowData, locationName);
             });
         })
-        .catch(error => showError('Error: ' + error));
+        .catch(error => {
+            showError(error.message);
+        })
+        .finally(() => {
+            hideLoadingAnimation();
+        });
+}
+
+function useMyLocation() {
+    console.log('useMyLocation function triggered');
+    showLoadingAnimation(); 
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const { latitude, longitude } = position.coords; 
+            Promise.all([
+                fetchSunriseSunset(latitude, longitude, getTodayDate()),
+                fetchSunriseSunset(latitude, longitude, getTomorrowDate())
+            ])
+            .then(([todayData, tomorrowData]) => {
+                return fetch(`https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=65dfc7241a2e0327872325ano74c68e`)
+                .then(response => response.json())
+                .then(data => {
+                    const locationName = data.display_name || 'Your Location';
+                    displayResults(todayData, tomorrowData, locationName);
+                });
+            })
+            .catch(error => {
+                showError('Unable to retrieve your location: ' + error.message);
+            })
+            .finally(() => {
+                hideLoadingAnimation(); 
+            });
+        }, function(error) {
+            showError('Geolocation error: ' + error.message);
+            hideLoadingAnimation(); 
+        });
+    } else {
+        showError('Geolocation is not supported by your browser.');
+        hideLoadingAnimation(); 
+    }
+}
+
+
+function showError(message) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = `<p class="error">${message}</p>`;
 }
 
 function fetchSunriseSunset(lat, lon, date) {
     return fetch(`https://api.sunrisesunset.io/json?lat=${lat}&lng=${lon}&date=${date}`)
         .then(response => response.json())
-        .then(data => data.results);
-        
+        .then(data => data.results);       
 }
 
 function displayResults(todayData, tomorrowData, locationName) {
@@ -49,11 +94,6 @@ function displayResults(todayData, tomorrowData, locationName) {
     `;
 }
 
-function showError(message) {
-    const errorContainer = document.getElementById('error-container');
-    errorContainer.innerHTML = `<p class="error-message">${message}</p>`;
-}
-
 function getTodayDate() {
     return new Date().toISOString().split('T')[0];
 }
@@ -69,56 +109,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const geoLocationButton = document.getElementById('geolocation-button');
 
     searchButton.addEventListener('click', searchLocation);
-
-    geoLocationButton.addEventListener('click', function() {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const { latitude, longitude } = position.coords;
-                Promise.all([
-                    fetchSunriseSunset(latitude, longitude, getTodayDate()),
-                    fetchSunriseSunset(latitude, longitude, getTomorrowDate())
-                ]).then(([todayData, tomorrowData]) => {
-                    displayResults(todayData, tomorrowData, 'Current Location');
-                });
-            }, function(error) {
-                showError('Geolocation error: ' + error.message);
-            });
-        } else {
-            showError('Geolocation is not supported by your browser.');
-        }
-    });
+    geoLocationButton.addEventListener('click', useMyLocation);
 });
 
-function useMyLocation() {
-    if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            Promise.all([
-                fetchSunriseSunset(lat, lon, getTodayDate()),
-                fetchSunriseSunset(lat, lon, getTomorrowDate())
-            ]).then(([todayData, tomorrowData]) => {
-                fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const locationName = data.display_name || 'Your Location';
-                        displayResults(todayData, tomorrowData, locationName);
-                    });
-            });
-        }, function(error) {
-            showError('Unable to retrieve your location: ' + error.message);
-        });
-    } else {
-        showError('Geolocation is not supported by your browser.');
-    }
+function showLoadingAnimation() {
+    console.log('Showing loading animation');
+    document.getElementById('loading').style.display = 'flex';
 }
 
-function showError(message) {
-    const errorDiv = document.getElementById('results');
-    errorDiv.innerHTML = `<p class="error">${message}</p>`;
+function hideLoadingAnimation() {
+    console.log('Hiding loading animation');
+    document.getElementById('loading').style.display = 'none';
 }
 
-    document.getElementById('geolocation-button').addEventListener('click', useMyLocation);
 
 
 
