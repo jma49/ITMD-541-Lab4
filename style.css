@@ -75,6 +75,9 @@ body::before {
 
 #locationInput {
     flex: 1;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem 1rem;
 }
 
 #search-button:hover, #geolocation-button:hover {
